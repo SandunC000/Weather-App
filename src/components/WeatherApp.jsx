@@ -14,7 +14,7 @@ import {
 import "./WeatherApp.css"
 
 const WeatherApp = () => {
-  let api_key = "f1fcd1c89e2c502707ad67ecfbf5d9db"
+  let api_key = ""
 
   const [showErrorPopup, setShowErrorPopup] = useState(false)
   const [wIcon, setWIcon] = useState(loading_icon)
