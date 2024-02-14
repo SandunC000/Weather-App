@@ -6,6 +6,7 @@ import rain_icon from "./rain.png"
 import search_icon from "./search.png"
 import snow_icon from "./snow.png"
 import wind_icon from "./wind.png"
+import loading_icon from "./loading_icon.gif"
 
 export {
   clear_icon,
@@ -16,4 +17,5 @@ export {
   search_icon,
   snow_icon,
   wind_icon,
+  loading_icon
 }

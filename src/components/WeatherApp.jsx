@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import {
   search_icon,
   clear_icon,
@@ -8,22 +8,20 @@ import {
   snow_icon,
   wind_icon,
   humidity_icon,
+  loading_icon,
 } from "../assets"
 
 import "./WeatherApp.css"
 
 const WeatherApp = () => {
-  let api_key = ""
+  let api_key = "f1fcd1c89e2c502707ad67ecfbf5d9db"
 
   const [showErrorPopup, setShowErrorPopup] = useState(false)
-  const [wIcon, setWIcon] = useState(cloud_icon)
+  const [wIcon, setWIcon] = useState(loading_icon)
+  const [cityInput, setCityInput] = useState("Colombo")
 
   const search = async () => {
-    const element = document.getElementsByClassName("cityInput")
-    if (element[0].value === "") {
-      return 0
-    }
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${element[0].value}&units=Metric&appid=${api_key}`
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&units=Metric&appid=${api_key}`
 
     try {
       let response = await fetch(url)
@@ -71,10 +69,19 @@ const WeatherApp = () => {
     setShowErrorPopup(false)
   }
 
+  useEffect(() => {
+    search()
+  }, [])
+
   return (
-    <div className='container'>
+    <div className={`container ${showErrorPopup ? "show-overlay" : ""}`}>
       <div className='top-bar'>
-        <input type='text' className='cityInput' placeholder='Search'></input>
+        <input
+          type='text'
+          className='cityInput'
+          placeholder='Search'
+          onChange={(e) => setCityInput(e.target.value)}
+        ></input>
 
         <div
           className='search-icon'
@@ -89,15 +96,15 @@ const WeatherApp = () => {
       <div className='weather-image'>
         <img src={wIcon} alt='' />
       </div>
-      <div className='weather-temp'>20</div>
+      <div className='weather-temp'></div>
 
-      <div className='weather-location'>London</div>
+      <div className='weather-location'></div>
 
       <div className='data-container'>
         <div className='element'>
           <img src={humidity_icon} alt='' className='icon' />
           <div className='data'>
-            <div className='humidity-percent'>64%</div>
+            <div className='humidity-percent'></div>
             <div className='text'>Humidity</div>
           </div>
         </div>
@@ -105,12 +112,13 @@ const WeatherApp = () => {
         <div className='element'>
           <img src={wind_icon} alt='' className='icon' />
           <div className='data'>
-            <div className='wind-rate'>18 km/h</div>
+            <div className='wind-rate'></div>
             <div className='text'>Wind Speed</div>
           </div>
         </div>
       </div>
 
+      {showErrorPopup && <div className='overlay'></div>}
       {showErrorPopup && (
         <div className='error-popup'>
           <p>City not found. Please try again.</p>
