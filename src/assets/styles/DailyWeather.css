@@ -1,19 +1,22 @@
 .daily-weather-card-container {
   display: flex;
   flex-direction: column;
-  margin: 10px; /* Adjust margin as needed for spacing between cards */
+  margin: 10px;
   padding: 10px;
-  background-color: #ebfffc; /* Add a background color if needed */
-  border: 1px solid #000; /* Add a border for the card */
-  border-radius: 8px; /* Add border-radius for rounded corners */
+  background-color: #ebfffc;
+  border: 1px solid #000;
+  border-radius: 8px; 
+
+  height: 90px;
 }
 
 .daily-weather-cards-row {
   display: flex;
   flex-direction: row;
-  justify-content: space-between; /* Adjust as needed, you can use other values like space-around or space-evenly */
-  align-items: center; /* Adjust as needed to align items vertically within the container */
-  padding: 20px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 .daily-weather-card > * {

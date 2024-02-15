@@ -1,8 +1,12 @@
-import React from 'react'
+import React from "react"
 
-const DailyWeather = () => {
+const DailyWeather = ({ day, temperature, desc }) => {
   return (
-    <div>DailyWeather</div>
+    <div>
+      <div className='text-black'>{day}</div>
+      <div className='text-detail'>{temperature} °C</div>
+      <div className='text-detail'>{desc}</div>
+    </div>
   )
 }
 

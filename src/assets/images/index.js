@@ -17,5 +17,5 @@ export {
   search_icon,
   snow_icon,
   wind_icon,
-  loading_icon
+  loading_icon,
 }

@@ -11,6 +11,7 @@ import {
   wind_icon,
   humidity_icon,
   loading_icon,
+  uv_icon,
 } from "../assets/images"
 import "../assets/styles/WeatherApp.css"
 import "../assets/styles/DailyWeather.css"
@@ -19,9 +20,9 @@ import DailyWeather from "./DailyWeather"
 const WeatherApp = () => {
   let api_key = "f1fcd1c89e2c502707ad67ecfbf5d9db"
 
-  const [showErrorPopup, setShowErrorPopup] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
-  const [wIcon, setWIcon] = useState(loading_icon)
+  const [lon, setLon] = useState("79.8612")
+  const [lat, setlat] = useState("6.9271")
+  const [location, setLocation] = useState()
 
   const [weatherData, setWeatherData] = useState({
     humidity: "",
@@ -32,31 +33,34 @@ const WeatherApp = () => {
     desc: "",
   })
 
-  const [location, setLocation] = useState()
+  const [wIcon, setWIcon] = useState(loading_icon)
 
-  const [lon, setLon] = useState("79.8612")
-  const [lat, setlat] = useState("6.9271")
+  const [showErrorPopup, setShowErrorPopup] = useState(false)
+  const [showMoreDetails, setShowMoreDetails] = useState(false)
+  // true
+  const [errorMessage, setErrorMessage] = useState("")
+
+  const [dailyWeatherData, setdailyWeatherData] = useState(null)
+  const [numDailyWeather, setNumDailyWeather] = useState(3)
 
   const search = async () => {
-    let url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=metric&appid=${api_key}`
+    let weatherUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=metric&appid=${api_key}`
 
-    let urlA = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}`
+    let locationUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}`
 
     try {
-      let response = await axios.get(url)
-      let responseA = await axios.get(urlA)
+      let weatherResponse = await axios.get(weatherUrl)
+      let locationResponse = await axios.get(locationUrl)
 
-      let data = response.data
-      let dataA = responseA.data
+      let weatherResData = weatherResponse.data
+      let locationData = locationResponse.data
 
-      console.log(dataA)
-
-      if (dataA.cod === "404") {
+      if (locationData.cod === "404") {
         console.error("City not found")
         setErrorMessage("City not Found")
         setShowErrorPopup(true)
         return
-      } else if (dataA.cod === "500" || responseA.cod === 400) {
+      } else if (locationData.cod === "400" || locationData.cod === 400) {
         console.error(data.message)
         setErrorMessage(data.message)
         setShowErrorPopup(true)
@@ -64,41 +68,71 @@ const WeatherApp = () => {
       }
 
       setWeatherData({
-        humidity: data.current.humidity + " %",
-        wind: Math.floor(data.current.wind_speed) + " km/h",
-        temperature: Math.floor(data.current.temp) + " °C",
-        feelsLike: "Feels Like : " + Math.floor(data.current.feels_like) + " °C",
-        uvi: data.current.uvi,
-        desc: data.current.weather[0].description,
+        humidity: weatherResData.current.humidity + " %",
+        wind: Math.floor(weatherResData.current.wind_speed) + " km/h",
+        temperature: Math.floor(weatherResData.current.temp) + " °C",
+        feelsLike: "Feels Like : " + Math.floor(weatherResData.current.feels_like) + " °C",
+        uvi: weatherResData.current.uvi,
+        desc: weatherResData.current.weather[0].description,
       })
 
-      setLocation(dataA.name)
+      setLocation(locationData.name)
 
-      if (data.current.weather[0].icon === "01d" || data.current.weather[0].icon === "01n") {
+      if (
+        weatherResData.current.weather[0].icon === "01d" ||
+        weatherResData.current.weather[0].icon === "01n"
+      ) {
         setWIcon(clear_icon)
-      } else if (data.current.weather[0].icon === "02d" || data.current.weather[0].icon === "02n") {
+      } else if (
+        weatherResData.current.weather[0].icon === "02d" ||
+        weatherResData.current.weather[0].icon === "02n"
+      ) {
         setWIcon(cloud_icon)
-      } else if (data.current.weather[0].icon === "03d" || data.current.weather[0].icon === "03n") {
+      } else if (
+        weatherResData.current.weather[0].icon === "03d" ||
+        weatherResData.current.weather[0].icon === "03n"
+      ) {
         setWIcon(cloud_icon)
-      } else if (data.current.weather[0].icon === "04d" || data.current.weather[0].icon === "04n") {
+      } else if (
+        weatherResData.current.weather[0].icon === "04d" ||
+        weatherResData.current.weather[0].icon === "04n"
+      ) {
         setWIcon(cloud_icon)
-      } else if (data.current.weather[0].icon === "09d" || data.current.weather[0].icon === "09n") {
+      } else if (
+        weatherResData.current.weather[0].icon === "09d" ||
+        weatherResData.current.weather[0].icon === "09n"
+      ) {
         setWIcon(drizzle_icon)
-      } else if (data.current.weather[0].icon === "10d" || data.current.weather[0].icon === "10n") {
+      } else if (
+        weatherResData.current.weather[0].icon === "10d" ||
+        weatherResData.current.weather[0].icon === "10n"
+      ) {
         setWIcon(rain_icon)
-      } else if (data.current.weather[0].icon === "13d" || data.current.weather[0].icon === "13n") {
+      } else if (
+        weatherResData.current.weather[0].icon === "13d" ||
+        weatherResData.current.weather[0].icon === "13n"
+      ) {
         setWIcon(snow_icon)
       } else {
         setWIcon(clear_icon)
       }
+
+      setdailyWeatherData(weatherResData)
     } catch (error) {
       setErrorMessage("Error fetching weather data")
       setShowErrorPopup(true)
     }
   }
 
+  console.log(dailyWeatherData)
+
   const closeErrorPopup = () => {
     setShowErrorPopup(false)
+  }
+
+  const handleViewMore = () => {
+    setShowMoreDetails((prevShowMore) => !prevShowMore)
+    setNumDailyWeather((prevNum) => (showMoreDetails ? 3 : 7))
   }
 
   useEffect(() => {
@@ -123,7 +157,7 @@ const WeatherApp = () => {
         </div>
       </div>
 
-      <div className='text'>Time: {new Date().toLocaleTimeString()}</div>
+      <div className='time'>Time: {new Date().toLocaleTimeString()}</div>
 
       <div className='weather-image'>
         <img src={wIcon} alt='' />
@@ -150,34 +184,28 @@ const WeatherApp = () => {
             <div className='text'>Wind Speed</div>
           </div>
         </div>
-
-        <div className='element'>
-          <img src={wind_icon} alt='' className='icon' />
-          <div className='data'>
-            <div className='weather-uvi'>{weatherData.uvi}</div>
-            <div className='text'>UV Index</div>
-          </div>
-        </div>
       </div>
 
       {showErrorPopup && <div className='overlay'></div>}
       {showErrorPopup && <ErrorPopup errorMessage={errorMessage} onClose={closeErrorPopup} />}
 
       <div className='daily-weather-cards-row'>
-        <div className='daily-weather-card-container'>
-          <DailyWeather />
-        </div>
-
-        <div className='daily-weather-card-container'>
-          <DailyWeather />
-        </div>
-
-        <div className='daily-weather-card-container'>
-          <DailyWeather />
-        </div>
+        {[...Array(numDailyWeather)].map((_, index) => (
+          <div key={index} className='daily-weather-card-container'>
+            {dailyWeatherData && dailyWeatherData.daily && dailyWeatherData.daily[index] && (
+              <DailyWeather
+                day={`Day ${index + 1}`}
+                temperature={dailyWeatherData.daily[index].temp.max}
+                desc={dailyWeatherData.daily[index].weather[0].description}
+              />
+            )}
+          </div>
+        ))}
       </div>
 
-      <div></div>
+      <button className='view-more-button' onClick={handleViewMore}>
+        {showMoreDetails ? "View Fewer Details" : "View More"}
+      </button>
     </div>
   )
 }

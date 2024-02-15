@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react"
 
 const ErrorPopup = ({ errorMessage, onClose }) => {
   return (
@@ -6,7 +6,7 @@ const ErrorPopup = ({ errorMessage, onClose }) => {
       <p>{errorMessage}</p>
       <button onClick={onClose}>OK</button>
     </div>
-  );
-};
+  )
+}
 
-export default ErrorPopup;
+export default ErrorPopup
