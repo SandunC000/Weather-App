@@ -1,13 +1,11 @@
 .daily-weather-card-container {
   display: flex;
   flex-direction: column;
-  margin: 10px;
+  margin: 5px;
   padding: 10px;
   background-color: #ebfffc;
   border: 1px solid #000;
-  border-radius: 8px; 
-
-  height: 90px;
+  border-radius: 8px;
 }
 
 .daily-weather-cards-row {

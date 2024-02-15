@@ -11,7 +11,6 @@ import {
   wind_icon,
   humidity_icon,
   loading_icon,
-  uv_icon,
 } from "../assets/images"
 import "../assets/styles/WeatherApp.css"
 import "../assets/styles/DailyWeather.css"
@@ -37,7 +36,6 @@ const WeatherApp = () => {
 
   const [showErrorPopup, setShowErrorPopup] = useState(false)
   const [showMoreDetails, setShowMoreDetails] = useState(false)
-  // true
   const [errorMessage, setErrorMessage] = useState("")
 
   const [dailyWeatherData, setdailyWeatherData] = useState(null)
@@ -56,12 +54,10 @@ const WeatherApp = () => {
       let locationData = locationResponse.data
 
       if (locationData.cod === "404") {
-        console.error("City not found")
         setErrorMessage("City not Found")
         setShowErrorPopup(true)
         return
       } else if (locationData.cod === "400" || locationData.cod === 400) {
-        console.error(data.message)
         setErrorMessage(data.message)
         setShowErrorPopup(true)
         return
@@ -123,8 +119,6 @@ const WeatherApp = () => {
       setShowErrorPopup(true)
     }
   }
-
-  console.log(dailyWeatherData)
 
   const closeErrorPopup = () => {
     setShowErrorPopup(false)
