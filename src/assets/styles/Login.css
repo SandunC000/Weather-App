@@ -1,0 +1,120 @@
+body {
+  background-color: #d3eff0;
+}
+
+.login-container {
+  width: 600px;
+  height: 100vh;
+  margin: auto;
+  border-radius: 12px;
+  background-image: linear-gradient(180deg, #130754 0%, #3b2f80 10%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  color: white;
+  font-size: 40px;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 25px;
+}
+
+.top-bar input {
+  display: flex;
+  width: 250px;
+  height: 30px;
+  background: #ebfffc;
+  border: none;
+  outline: none;
+  border-radius: 40px;
+  padding-left: 40px;
+  color: #626262;
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 5px;
+}
+
+.login-button {
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 50px;
+  background: #ebfffc;
+  border-radius: 40px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.text {
+  font-size: 20px;
+  font-weight: 400;
+  color: white;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 999;
+  display: none;
+}
+
+.container.show-overlay {
+  position: relative;
+}
+
+.container.show-overlay .overlay {
+  display: block;
+}
+
+.error-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border: 2px solid #000000;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  text-align: center;
+}
+
+.error-popup p {
+  margin: 0;
+  color: #000000;
+  font-weight: bold;
+}
+
+.error-popup button {
+  background-color: #38369b;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.error-popup button:hover {
+  background-color: #cc4b37;
+}

@@ -2,20 +2,21 @@ body {
   background-color: #d3eff0;
 }
 
-.container {
+.weather-container {
   width: 600px;
+  height: 110vh;
   margin: auto;
   border-radius: 12px;
   background-image: linear-gradient(180deg, #130754 0%, #3b2f80 10%);
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
-  padding-bottom: 30px;
 }
 
 .top-bar {
   display: flex;
+  align-items: center;
   justify-content: center;
   gap: 10px;
   padding-top: 25px;
@@ -23,19 +24,20 @@ body {
 
 .top-bar input {
   display: flex;
-  width: 362px;
-  height: 50px;
+  width: 250px;
+  height: 30px;
   background: #ebfffc;
   border: none;
   outline: none;
   border-radius: 40px;
   padding-left: 40px;
   color: #626262;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 400;
+  margin-bottom: 5px;
 }
 
-.search-icon {
+.button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,12 +53,23 @@ body {
   justify-content: center;
 }
 
+.weather-image img {
+  width: 30%; /* Resize the width to 50% of the original size */
+  height: auto; /* Maintain the aspect ratio */
+}
+
 .weather-temp {
   display: flex;
   justify-content: center;
   color: white;
-  font-size: 50px;
-  font-weight: 400;
+  font-size: 40px;
+}
+
+.weather-temp-feels-like {
+  display: flex;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
 }
 
 .weather-location {
@@ -89,6 +102,8 @@ body {
 .text {
   font-size: 20px;
   font-weight: 400;
+  color: white;
+  margin-top:15px
 }
 
 .icon {

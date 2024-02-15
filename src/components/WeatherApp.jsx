@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react"
+import axios from "axios"
+import ErrorPopup from "./ErrorPopup"
 import {
   search_icon,
   clear_icon,
@@ -9,59 +11,89 @@ import {
   wind_icon,
   humidity_icon,
   loading_icon,
-} from "../assets"
-
-import "./WeatherApp.css"
+} from "../assets/images"
+import "../assets/styles/WeatherApp.css"
+import "../assets/styles/DailyWeather.css"
+import DailyWeather from "./DailyWeather"
 
 const WeatherApp = () => {
-  let api_key = ""
+  let api_key = "f1fcd1c89e2c502707ad67ecfbf5d9db"
 
   const [showErrorPopup, setShowErrorPopup] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
   const [wIcon, setWIcon] = useState(loading_icon)
-  const [cityInput, setCityInput] = useState("Colombo")
+
+  const [weatherData, setWeatherData] = useState({
+    humidity: "",
+    wind: "",
+    temperature: "",
+    feelsLike: "",
+    uvi: "",
+    desc: "",
+  })
+
+  const [location, setLocation] = useState()
+
+  const [lon, setLon] = useState("79.8612")
+  const [lat, setlat] = useState("6.9271")
 
   const search = async () => {
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&units=Metric&appid=${api_key}`
+    let url = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=metric&appid=${api_key}`
+
+    let urlA = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}`
 
     try {
-      let response = await fetch(url)
-      let data = await response.json()
+      let response = await axios.get(url)
+      let responseA = await axios.get(urlA)
 
-      if (data.cod === "404") {
+      let data = response.data
+      let dataA = responseA.data
+
+      console.log(dataA)
+
+      if (dataA.cod === "404") {
         console.error("City not found")
+        setErrorMessage("City not Found")
+        setShowErrorPopup(true)
+        return
+      } else if (dataA.cod === "500" || responseA.cod === 400) {
+        console.error(data.message)
+        setErrorMessage(data.message)
         setShowErrorPopup(true)
         return
       }
 
-      const humidity = document.getElementsByClassName("humidity-percent")
-      const wind = document.getElementsByClassName("wind-rate")
-      const temperature = document.getElementsByClassName("weather-temp")
-      const location = document.getElementsByClassName("weather-location")
+      setWeatherData({
+        humidity: data.current.humidity + " %",
+        wind: Math.floor(data.current.wind_speed) + " km/h",
+        temperature: Math.floor(data.current.temp) + " °C",
+        feelsLike: "Feels Like : " + Math.floor(data.current.feels_like) + " °C",
+        uvi: data.current.uvi,
+        desc: data.current.weather[0].description,
+      })
 
-      humidity[0].innerHTML = data.main.humidity + " %"
-      wind[0].innerHTML = Math.floor(data.wind.speed) + " km/h"
-      temperature[0].innerHTML = Math.floor(data.main.temp) + " C"
-      location[0].innerHTML = data.name
+      setLocation(dataA.name)
 
-      if (data.weather[0].icon === "01d" || data.weather[0].icon === "01n") {
+      if (data.current.weather[0].icon === "01d" || data.current.weather[0].icon === "01n") {
         setWIcon(clear_icon)
-      } else if (data.weather[0].icon === "02d" || data.weather[0].icon === "02n") {
+      } else if (data.current.weather[0].icon === "02d" || data.current.weather[0].icon === "02n") {
         setWIcon(cloud_icon)
-      } else if (data.weather[0].icon === "03d" || data.weather[0].icon === "03n") {
+      } else if (data.current.weather[0].icon === "03d" || data.current.weather[0].icon === "03n") {
+        setWIcon(cloud_icon)
+      } else if (data.current.weather[0].icon === "04d" || data.current.weather[0].icon === "04n") {
+        setWIcon(cloud_icon)
+      } else if (data.current.weather[0].icon === "09d" || data.current.weather[0].icon === "09n") {
         setWIcon(drizzle_icon)
-      } else if (data.weather[0].icon === "04d" || data.weather[0].icon === "04n") {
-        setWIcon(drizzle_icon)
-      } else if (data.weather[0].icon === "09d" || data.weather[0].icon === "09n") {
+      } else if (data.current.weather[0].icon === "10d" || data.current.weather[0].icon === "10n") {
         setWIcon(rain_icon)
-      } else if (data.weather[0].icon === "10d" || data.weather[0].icon === "10n") {
-        setWIcon(rain_icon)
-      } else if (data.weather[0].icon === "13d" || data.weather[0].icon === "13n") {
+      } else if (data.current.weather[0].icon === "13d" || data.current.weather[0].icon === "13n") {
         setWIcon(snow_icon)
       } else {
         setWIcon(clear_icon)
       }
     } catch (error) {
-      console.error("Error fetching weather data:", error)
+      setErrorMessage("Error fetching weather data")
+      setShowErrorPopup(true)
     }
   }
 
@@ -74,17 +106,15 @@ const WeatherApp = () => {
   }, [])
 
   return (
-    <div className={`container ${showErrorPopup ? "show-overlay" : ""}`}>
+    <div className={`weather-container ${showErrorPopup ? "show-overlay" : ""}`}>
       <div className='top-bar'>
-        <input
-          type='text'
-          className='cityInput'
-          placeholder='Search'
-          onChange={(e) => setCityInput(e.target.value)}
-        ></input>
+        <div>
+          <input type='text' placeholder='Latitude' onChange={(e) => setlat(e.target.value)} />
+          <input type='text' placeholder='Longitude' onChange={(e) => setLon(e.target.value)} />
+        </div>
 
         <div
-          className='search-icon'
+          className='button'
           onClick={() => {
             search()
           }}
@@ -93,18 +123,22 @@ const WeatherApp = () => {
         </div>
       </div>
 
+      <div className='text'>Time: {new Date().toLocaleTimeString()}</div>
+
       <div className='weather-image'>
         <img src={wIcon} alt='' />
       </div>
-      <div className='weather-temp'></div>
 
-      <div className='weather-location'></div>
+      <div className='weather-location'>{location}</div>
+
+      <div className='weather-temp'>{weatherData.temperature}</div>
+      <div className='weather-temp-feels-like'>{weatherData.feelsLike}</div>
 
       <div className='data-container'>
         <div className='element'>
           <img src={humidity_icon} alt='' className='icon' />
           <div className='data'>
-            <div className='humidity-percent'></div>
+            <div className='humidity-percent'>{weatherData.humidity}</div>
             <div className='text'>Humidity</div>
           </div>
         </div>
@@ -112,19 +146,38 @@ const WeatherApp = () => {
         <div className='element'>
           <img src={wind_icon} alt='' className='icon' />
           <div className='data'>
-            <div className='wind-rate'></div>
+            <div className='wind-rate'>{weatherData.wind}</div>
             <div className='text'>Wind Speed</div>
+          </div>
+        </div>
+
+        <div className='element'>
+          <img src={wind_icon} alt='' className='icon' />
+          <div className='data'>
+            <div className='weather-uvi'>{weatherData.uvi}</div>
+            <div className='text'>UV Index</div>
           </div>
         </div>
       </div>
 
       {showErrorPopup && <div className='overlay'></div>}
-      {showErrorPopup && (
-        <div className='error-popup'>
-          <p>City not found. Please try again.</p>
-          <button onClick={closeErrorPopup}>OK</button>
+      {showErrorPopup && <ErrorPopup errorMessage={errorMessage} onClose={closeErrorPopup} />}
+
+      <div className='daily-weather-cards-row'>
+        <div className='daily-weather-card-container'>
+          <DailyWeather />
         </div>
-      )}
+
+        <div className='daily-weather-card-container'>
+          <DailyWeather />
+        </div>
+
+        <div className='daily-weather-card-container'>
+          <DailyWeather />
+        </div>
+      </div>
+
+      <div></div>
     </div>
   )
 }
