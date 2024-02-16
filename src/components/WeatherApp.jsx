@@ -180,6 +180,8 @@ const WeatherApp = () => {
         </div>
       </div>
 
+      <div className="text-weather">Weather Forecast for next days</div>
+
       {showErrorPopup && <div className='overlay'></div>}
       {showErrorPopup && <ErrorPopup errorMessage={errorMessage} onClose={closeErrorPopup} />}
 
